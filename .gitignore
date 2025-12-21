@@ -1,0 +1,13 @@
+.env
+.env.*
+!.env.example
+samples/
+*.toon
+*.jpg
+*.jpeg
+*.png
+venv/
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+*.ipynb
