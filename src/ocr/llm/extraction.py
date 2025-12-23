@@ -92,3 +92,11 @@ def extract_rg_from_toon(toon_path: str) -> Dict[str, Any]:
     with open(toon_path, "r", encoding="utf-8") as file:
         toon_text = file.read()
     return extract_from_toon(toon_text, "rg")
+
+def extract_rg_from_text(toon_text: str) -> RGExtraction:
+    """
+    Extract RG data from toon text and return a structured object.
+    """
+    data = extract_from_toon(toon_text, "rg")
+    return RGExtraction.model_validate(data)
+
