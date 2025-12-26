@@ -12,17 +12,15 @@ class RGExtraction(BaseModel):
     full_name: Optional[str]
     rg_number: Optional[str]
     issuer: Optional[str]
+    uf: Optional[str]
     birth_date: Optional[str]
     naturalidade: Optional[str]
-    state: Optional[str]
     filiacao_pai: Optional[str]
     filiacao_mae: Optional[str]
-    observacoes: Optional[str]
-    confidence: Optional[float]
 
     # Verso / outros identificadores (nullable)
     data_expedicao: Optional[str]
-    via: Optional[str]
+    serie: Optional[str]
     registro_civil: Optional[str]
     dni: Optional[str]
 
@@ -31,7 +29,4 @@ class RGExtraction(BaseModel):
     cert_militar: Optional[str]
     cnh: Optional[str]
     cns: Optional[str]
-
     ctps_numero: Optional[str]
-    ctps_serie: Optional[str]
-    ctps_uf: Optional[str]

@@ -48,7 +48,32 @@ def _model_dump(model: RGExtraction) -> Dict[str, Any]:
     return model.dict()  # pydantic v1 fallback
 
 
-def extract_from_toon(toon_text: str, document_type: str) -> Dict[str, Any]:
+def _get_usage_value(usage, key: str):
+    if usage is None:
+        return None
+    if isinstance(usage, dict):
+        return usage.get(key)
+    return getattr(usage, key, None)
+
+
+def _print_usage(usage) -> None:
+    prompt_tokens = _get_usage_value(usage, "prompt_tokens")
+    completion_tokens = _get_usage_value(usage, "completion_tokens")
+    total_tokens = _get_usage_value(usage, "total_tokens")
+
+    if prompt_tokens is None and completion_tokens is None and total_tokens is None:
+        return
+
+    print("Usage LLM (tokens):")
+    if prompt_tokens is not None:
+        print(f"   input: {prompt_tokens}")
+    if completion_tokens is not None:
+        print(f"   output: {completion_tokens}")
+    if total_tokens is not None:
+        print(f"   total: {total_tokens}")
+
+
+def extract_from_toon(toon_text: str, document_type: str, debug: bool = False) -> Dict[str, Any]:
     """
     Extract structured data from .toon text.
     """
@@ -80,23 +105,30 @@ def extract_from_toon(toon_text: str, document_type: str) -> Dict[str, Any]:
     except litellm.APIError as exc:
         raise RuntimeError(f"API error: {exc}") from exc
 
+    if debug:
+        print(f"\n?? LLM model (requested): {model_name}")
+        resp_model = getattr(response, "model", None)
+        if resp_model:
+            print(f"?? LLM model (response): {resp_model}")
+        _print_usage(getattr(response, "usage", None))
+
     content = response.choices[0].message.content
     parsed = RGExtraction.model_validate_json(content)
     return _model_dump(parsed)
 
 
-def extract_rg_from_toon(toon_path: str) -> Dict[str, Any]:
+def extract_rg_from_toon(toon_path: str, debug: bool = False) -> Dict[str, Any]:
     """
     Convenience helper for RG extraction from a .toon file.
     """
     with open(toon_path, "r", encoding="utf-8") as file:
         toon_text = file.read()
-    return extract_from_toon(toon_text, "rg")
+    return extract_from_toon(toon_text, "rg", debug=debug)
 
-def extract_rg_from_text(toon_text: str) -> RGExtraction:
+def extract_rg_from_text(toon_text: str, debug: bool = False) -> RGExtraction:
     """
     Extract RG data from toon text and return a structured object.
     """
-    data = extract_from_toon(toon_text, "rg")
+    data = extract_from_toon(toon_text, "rg", debug=debug)
     return RGExtraction.model_validate(data)
 

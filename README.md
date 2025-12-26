@@ -1,48 +1,33 @@
 # OCR de Documentos Brasileiros (RG, CNH, Passaporte)
 
-Este projeto transforma documentos brasileiros em dados estruturados, com foco em qualidade, custo e velocidade.
+Projeto para transformar documentos brasileiros em dados estruturados, com foco em custo, tempo e qualidade.
 
 ## Motivacao
 
-Empresas precisam extrair dados confiaveis de RG, CNH e passaporte para onboarding, KYC e antifraude. O objetivo aqui e comparar duas abordagens:
+Este projeto nasceu para reduzir custo e tempo na extracao de dados de documentos brasileiros.
+Estavamos comparando pipelines e otimizando cada etapa para diminuir gasto com LLM e evitar dependencia
+excessiva de servicos cloud caros, mantendo qualidade de dados estruturados.
 
-1) Pipeline proprio de OCR
-- Gera N variacoes de preprocessamento
-- Executa OCR
-- Consolida em um arquivo .toon para LLM
+## O que fazemos
 
-2) OCR direto via LLM
-- Envia a imagem para a LLM
-- Converte diretamente em dado estruturado
+Pipeline proprio:
+- Preprocessamento de imagem (multiplas variacoes)
+- OCR local (Tesseract)
+- Conversao para .toon
+- LLM para gerar JSON estruturado
 
-## Valor de negocio
+## Comparacao
 
-- Reducao de custo por documento (tokens e tempo)
-- Maior controle sobre qualidade do texto extraido
-- Flexibilidade para ajustar o preprocessing por tipo de documento
+- Nosso pipeline (preprocess + OCR + .toon + LLM)
+- Amazon [Textract]("https://docs.aws.amazon.com/textract/latest/dg/what-is.html") + LLM (Textract entrega texto nao estruturado)
 
-## Benchmark (template)
+## Dados reais (26/12/2025)
 
-A tabela abaixo compara custo e tempo das duas abordagens. Preencha com dados reais de cada documento e lote de testes.
+| Documento | Metodo | Tempo total (s) | Tokens entrada | Tokens saida | Custo LLM (USD) | Custo base (USD) | Custo total (USD) |
+|---|---|---:|---:|---:|---:|---:|---:|
+| RG | Pipeline proprio (preprocess + OCR + .toon + LLM) | 15.88 | 3199 | 202 | 0.0006 | 0.0000 | 0.0006 |
+| RG | Textract + LLM | 3.00 | - | - | 0.0006 | 0.0500 | 0.0506 |
 
-| Documento | Metodo | Tempo total (s) | Tokens entrada | Tokens saida | Custo (USD) | Observacoes |
-|---|---|---:|---:|---:|---:|---|
-| RG | Pipeline proprio (preprocess + OCR + .toon + LLM) |  |  |  |  |  |
-| RG | LLM direto (imagem -> JSON) |  |  |  |  |  |
-| CNH | Pipeline proprio (preprocess + OCR + .toon + LLM) |  |  |  |  |  |
-| CNH | LLM direto (imagem -> JSON) |  |  |  |  |  |
-| Passaporte | Pipeline proprio (preprocess + OCR + .toon + LLM) |  |  |  |  |  |
-| Passaporte | LLM direto (imagem -> JSON) |  |  |  |  |  |
-
-## Criterios de comparacao
-
-- Qualidade do dado estruturado (precisao dos campos)
-- Tempo total de execucao
-- Custo em tokens (entrada e saida)
-- Custo final em USD por documento
-
-## Proximos passos
-
-- Preencher o benchmark com dados reais
-- Integrar LLMs e medir custo real por documento
-- Definir threshold de qualidade minima por tipo de documento
+**Preco por RG processado:**
+- Pipeline proprio: **US$ 0.0006**
+- Textract + LLM: **US$ 0.0506**
