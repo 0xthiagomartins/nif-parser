@@ -26,8 +26,8 @@ Pipeline proprio:
 | Documento | Metodo | Tempo total (s) | Tokens entrada | Tokens saida | Custo LLM (USD) | Custo base (USD) | Custo total (USD) |
 |---|---|---:|---:|---:|---:|---:|---:|
 | RG | Pipeline proprio (preprocess + OCR + .toon + LLM) | 15.88 | 3199 | 202 | 0.0006 | 0.0000 | 0.0006 |
-| RG | Textract + LLM | 3.00 | - | - | 0.0006 | 0.0500 | 0.0506 |
+| RG | Textract + LLM | 10.71 | 1600 | 202 | 0.0004 | 0.0500 | 0.0504 |
 
 **Preco por RG processado:**
 - Pipeline proprio: **US$ 0.0006**
-- Textract + LLM: **US$ 0.0506**
+- Textract + LLM: **US$ 0.0504**
